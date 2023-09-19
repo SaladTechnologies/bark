@@ -72,16 +72,18 @@ def generate(req: GenerateRequest = Body(...)):
 
 
 if __name__ == "__main__":
-    print("Loading model...")
+    print("Loading model...", flush=True)
     start = time.perf_counter()
     processor, model = load()
     end = time.perf_counter()
-    print(f"Model loaded in {end - start:.2f}s")
+    print(f"Model loaded in {end - start:.2f}s", flush=True)
 
-    print("Generating test audio...")
+    print("Generating test audio...", flush=True)
     start = time.perf_counter()
     test_text = "Hello, my name is Suno and I like to Bark!"
     mp3, dur_ms = predict(processor, model, test_text)
     end = time.perf_counter()
-    print(f"Test audio ({dur_ms / 1000:.2f}s) generated in {end - start:.2f}s")
+    print(
+        f"Test audio ({dur_ms / 1000:.2f}s) generated in {end - start:.2f}s", flush=True
+    )
     uvicorn.run(app, host=host, port=port)
