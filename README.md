@@ -27,11 +27,9 @@ saladtechnologies/bark:latest
 ```bash
 curl  -X POST \
   'http://localhost:8000/generate' \
-  --header 'Accept: */*' \
-  --header 'User-Agent: Thunder Client (https://www.thunderclient.com)' \
   --header 'Content-Type: application/json' \
   --data-raw '{
   "text": "My name is Suno, and uh - I am an artificial intelligence that generates sound from text. Can you tell, or do I sound human?",
-  "voice_preset": "v2/en_speaker_0"
+  "voice_preset": "v2/en_speaker_4"
 }' -o outputs/sample.mp3
 ```
