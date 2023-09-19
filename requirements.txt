@@ -1,0 +1,9 @@
+numpy
+torch
+fastapi
+uvicorn
+optimum
+soundfile
+pydub
+pydantic
+git+https://github.com/huggingface/transformers.git@v4.33.2
