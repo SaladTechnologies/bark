@@ -19,17 +19,35 @@ port = int(port)
 
 
 def predict(processor, model, text, voice_preset=None):
+    # We need to convert our text into something the model can understand,
+    # using the processor. We're going to have it return PyTorch tensors.
     inputs = processor(text, voice_preset=voice_preset, return_tensors="pt")
+
+    # Now we need to move these tensors to the GPU, so they can be processed
+    # by the model.
     inputs = {k: v.to("cuda") for k, v in inputs.items()}
+
+    # The model generates more tensors that can be decoded into audio.
     speech_values = model.generate(**inputs, do_sample=True)
 
+    # For interpreting the tensors back into audio, we need
+    # to know the sampling_rate that was used to generate it.
     sampling_rate = model.generation_config.sample_rate
+
+    # Now we need to move our tensors back to the CPU and convert them to a NumPy array
     speech = speech_values.cpu().numpy().squeeze()
+
+    # The soundfile library requires us to convert our array of float16 numbers
+    # into an array of int16 numbers.
     scaled_speech = np.int16(speech * 32767)
 
+    # We don't want to actually write to the file system, so we'll create
+    # a file-like BytesIO object, and write the wav to that
     wav = BytesIO()
     sf.write(wav, scaled_speech, sampling_rate, format="WAV", subtype="PCM_16")
 
+    # WAV files are huge, so we're going to use pydub to convert it to a much
+    # smaller mp3 "file"
     audio = AudioSegment.from_wav(wav)
     dur_ms = len(audio)
 
